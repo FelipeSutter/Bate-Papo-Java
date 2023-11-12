@@ -29,18 +29,19 @@ public class ChatServer {
                 // cria o socket e fica aguardando o client se conectar a ele.
                 System.out.println("Aguardando conexao...");
                 Socket client = server.accept();
-                System.out.println("Cliente" + client.getInetAddress().getHostAddress() + "conectou!");
+                System.out.println("Cliente " + client.getInetAddress().getHostAddress() + " conectou!");
 
                 // cria um leitor e escritor para poder ler e escrever mensagens do cliente.
+                // TODO: Fazer o Scanner para ler o input do teclado.
                 BufferedReader leitor = new BufferedReader(new InputStreamReader(client.getInputStream()));
-                PrintWriter escritor = new PrintWriter(client.getOutputStream());
+                PrintWriter escritor = new PrintWriter(client.getOutputStream(), true);
 
                 // lê a mensagem que o client enviou
                 String mensagem = leitor.readLine();
                 System.out.println("Mensagem enviada do cliente: " + mensagem);
 
                 // enviar mensagem pro client
-                escritor.println("Sua mensagem foi recebida. Aqui está ela: " + mensagem);
+                escritor.println("Sua mensagem foi recebida. Aqui esta ela: " + mensagem);
 
                 client.close();
 
