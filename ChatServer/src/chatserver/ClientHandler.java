@@ -44,31 +44,33 @@ public class ClientHandler extends Thread {
             username = leitor.readLine();
             transmitir(username + " entrou no chat!");
             System.out.println(username + " conectou-se ao servidor.");
-            
+
             String clientMessage;
             do {
-                
+
                 clientMessage = leitor.readLine();
                 transmitir(username + ": " + clientMessage);
-                
+
             } while ((clientMessage != null) || (!clientMessage.equalsIgnoreCase("/sair")));
-            
+
             synchronized (listaDeEscritores) {
                 listaDeEscritores.remove(escritor);
             }
-            
-            transmitir(username + " saiu do chat :(");
-            
-            
+
+            transmitir(username + " saiu do chat :( ");
+            System.out.println(username + " desconectou-se.");
+
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
     private void transmitir(String mensagem) {
-        listaDeEscritores.forEach(escritor -> {
-            escritor.println(mensagem);
-        });
+        synchronized (listaDeEscritores) {
+            listaDeEscritores.forEach(escritor -> {
+                escritor.println(mensagem);
+            });
+        }
     }
 
 }
