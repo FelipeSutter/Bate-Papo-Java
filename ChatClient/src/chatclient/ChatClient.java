@@ -63,14 +63,6 @@ public class ChatClient extends javax.swing.JFrame {
         } catch (IOException ex) {
             ex.printStackTrace();
         }
-
-        // Adiciona um listener para fechar adequadamente os recursos quando a janela é fechada
-        addWindowListener(new java.awt.event.WindowAdapter() {
-            @Override
-            public void windowClosing(java.awt.event.WindowEvent windowEvent) {
-                handleDisconnect();
-            }
-        });
     }
 
     private void sendMessage() {
@@ -78,6 +70,9 @@ public class ChatClient extends javax.swing.JFrame {
         if (!message.isEmpty()) {
             writer.println(message);
             messageInput.setText("");
+            if(message.equalsIgnoreCase("/sair")) {
+                handleDisconnect();
+            }
         }
     }
 
@@ -89,11 +84,14 @@ public class ChatClient extends javax.swing.JFrame {
         try {
             if (socket != null && !socket.isClosed()) {
                 writer.println("/sair");
+                System.exit(0);
                 socket.close();
             }
         } catch (IOException e) {
             e.printStackTrace();
         }
+        setVisible(false);
+        dispose();
         System.exit(0);
     }
 

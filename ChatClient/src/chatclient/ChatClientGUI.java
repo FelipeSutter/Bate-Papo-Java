@@ -64,12 +64,14 @@ public class ChatClientGUI extends javax.swing.JFrame {
         try {
             if (socket != null && !socket.isClosed()) {
                 writer.println("/sair");
-                dispose();
                 socket.close();
+                System.exit(0);
             }
         } catch (IOException e) {
             e.printStackTrace();
         }
+        setVisible(false);
+        dispose();
         System.exit(0);
     }
 
@@ -156,6 +158,9 @@ public class ChatClientGUI extends javax.swing.JFrame {
         if (!message.isEmpty()) {
             writer.println(message);
             messageInput.setText("");
+            if(message.equalsIgnoreCase("/sair")) {
+                handleDisconnect();
+            }
         }
     }//GEN-LAST:event_jButton1ActionPerformed
 

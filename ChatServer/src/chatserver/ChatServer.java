@@ -10,7 +10,9 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 /**
@@ -21,7 +23,7 @@ public class ChatServer {
 
     private static final int PORTA = 1515;
 
-    private static Set<PrintWriter> escritores = new HashSet<>();
+    private static List<ClientHandler> escritores = new ArrayList<>();
 
     public static void main(String[] args) {
         try (ServerSocket server = new ServerSocket(PORTA)) {
@@ -29,7 +31,10 @@ public class ChatServer {
             System.out.println("Servidor rodando na porta: " + PORTA);
 
             while (true) {
-                new ClientHandler(server.accept(), escritores).start();
+                Socket socket = server.accept();
+                ClientHandler clientHandler = new ClientHandler(socket, escritores);
+                escritores.add(clientHandler);
+                clientHandler.start();
             }
 
         } catch (IOException e) {
