@@ -19,7 +19,7 @@ public class ChatClient {
 
     public static void main(String[] args) {
 
-        System.out.println("Digite o seu nome: ");
+        System.out.print("Digite o seu nome: ");
         Scanner scanner = new Scanner(System.in);
         // pega o nome do usuario
         String username = scanner.nextLine();
@@ -39,7 +39,7 @@ public class ChatClient {
                         System.out.println(mensagemRecebida);
                     }
                 } catch (IOException e2) {
-                    e2.printStackTrace();
+                    System.out.println(username + " saiu do chat.");
                 }
             });
             
@@ -48,17 +48,19 @@ public class ChatClient {
             // cliente escrever a msg
             // continua mandando msg se for diferente de /sair
             String mensagem;
-            do{
-                System.out.print("Escreva uma mensagem: ");
+            while(true){
+                Thread.sleep(300);
+                System.out.println("Escreva uma mensagem: ");
                 mensagem = scanner.nextLine();
                 if(!mensagem.isEmpty()) {
                     escritor.println(mensagem);
+                    if(mensagem.equalsIgnoreCase("/sair")) break;
                 }
-            } while(!mensagem.equalsIgnoreCase("/sair"));
+            }
             
             System.out.println("Saindo do chat...");
             receptor.interrupt();
-        } catch (IOException e) {
+        } catch (IOException | InterruptedException e) {
             e.printStackTrace();
         }
 

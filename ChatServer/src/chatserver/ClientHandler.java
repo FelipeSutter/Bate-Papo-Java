@@ -46,19 +46,16 @@ public class ClientHandler extends Thread {
             System.out.println(username + " conectou-se ao servidor.");
 
             String clientMessage;
-            do {
-
+            do{
                 clientMessage = leitor.readLine();
                 transmitir(username + ": " + clientMessage);
-
-            } while ((clientMessage != null) || (!clientMessage.equalsIgnoreCase("/sair")));
-
-            synchronized (listaDeEscritores) {
-                listaDeEscritores.remove(escritor);
-            }
+            } while(!clientMessage.equalsIgnoreCase("/sair"));
 
             transmitir(username + " saiu do chat :( ");
-            System.out.println(username + " desconectou-se.");
+
+            listaDeEscritores.remove(escritor);
+    
+
             
             leitor.close();
             escritor.close();
