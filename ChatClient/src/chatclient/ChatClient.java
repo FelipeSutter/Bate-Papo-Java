@@ -17,30 +17,51 @@ import java.util.Scanner;
  */
 public class ChatClient {
 
-
     public static void main(String[] args) {
-        try {
-            // cria o socket para o client, conectando na porta 1515
-            Socket socket = new Socket("localhost", 1515);
+
+        System.out.println("Digite o seu nome: ");
+        Scanner scanner = new Scanner(System.in);
+        // pega o nome do usuario
+        String username = scanner.nextLine();
+
+        // cria o socket onde o server está rodando, o leitor e escritor.
+        try (Socket socket = new Socket("localhost", 1515); 
+                BufferedReader leitor = new BufferedReader(new InputStreamReader(socket.getInputStream())); 
+                PrintWriter escritor = new PrintWriter(socket.getOutputStream(), true);) 
+        {
+            escritor.println(username);
+
+            // thread criada para receber mensagem dos usuários
+            Thread receptor = new Thread(() -> {
+                try {
+                    String mensagemRecebida;
+                    while((mensagemRecebida = leitor.readLine()) != null) {
+                        System.out.println(mensagemRecebida);
+                    }
+                } catch (IOException e2) {
+                    e2.printStackTrace();
+                }
+            });
             
-            // leitor e escritor p/ client enviar pro server e receber msg do server
-            // TODO: Fazer o Scanner para ler o input do teclado.
-            BufferedReader leitor = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-            PrintWriter escritor = new PrintWriter(socket.getOutputStream(), true);
-            System.out.print("Escreva algo: ");
-            Scanner mensagemCliente = new Scanner(System.in);
-            escritor.println(mensagemCliente);
+            receptor.start();
             
+            // cliente escrever a msg
+            // continua mandando msg se for diferente de /sair
+            String mensagem;
+            do{
+                System.out.print("Escreva uma mensagem: ");
+                mensagem = scanner.nextLine();
+                if(!mensagem.isEmpty()) {
+                    escritor.println(mensagem);
+                }
+            } while(!mensagem.equalsIgnoreCase("/sair"));
             
-            String mensagemRecebida = leitor.readLine();
-            System.out.println(mensagemRecebida);
-            
-            socket.close();
-            
-        } catch(IOException e) {
+            System.out.println("Saindo do chat...");
+            receptor.interrupt();
+        } catch (IOException e) {
             e.printStackTrace();
         }
-            
+
     }
-    
+
 }

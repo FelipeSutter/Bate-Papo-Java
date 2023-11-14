@@ -59,6 +59,10 @@ public class ClientHandler extends Thread {
 
             transmitir(username + " saiu do chat :( ");
             System.out.println(username + " desconectou-se.");
+            
+            leitor.close();
+            escritor.close();
+            socket.close();
 
         } catch (IOException e) {
             e.printStackTrace();
