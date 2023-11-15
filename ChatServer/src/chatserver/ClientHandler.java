@@ -39,6 +39,9 @@ public class ClientHandler extends Thread {
             escritor = new PrintWriter(socket.getOutputStream(), true);
 
             username = leitor.readLine();
+            
+            // aqui entraria uma verificação p ver se o username já existe
+            enviarMensagem("Seja bem-vindo(a) ao chat!");
             transmitir(username + " entrou no chat!");
             System.out.println(username + " conectou-se ao servidor.");
 
@@ -67,7 +70,7 @@ public class ClientHandler extends Thread {
             e.printStackTrace();
         }
     }
-    
+
     public void enviarMensagem(String mensagem) {
         escritor.println(mensagem);
     }
@@ -78,6 +81,15 @@ public class ClientHandler extends Thread {
                 client.enviarMensagem(mensagem);
             });
         }
+    }
+
+    public boolean verificarCliente(String username) {
+        for (ClientHandler client : listaDeEscritores) {
+            if (client.getUsername().equalsIgnoreCase(username)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     private void processarComandoPrivado(String mensagem) {
